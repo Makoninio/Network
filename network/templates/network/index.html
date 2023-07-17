@@ -1,0 +1,52 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+  <h1 class="col-lg-8">Posts</h1>
+  <br>
+
+  <div class="mb-3 col-lg-9">
+        
+    {% for post in page_obj %}
+      <div class="border border-primary">
+        <div style="margin:10px;">
+          <h2><a href="{% url 'profile' user_id=post.user.id %}">{{ post.user }}</a></h2>
+          <h5 id="content{{ post.id }}">{{ post.content }}</h5>
+          <p style="color: grey;">{{ post.post_date }}</p>
+
+          <!--Like and dislike-->
+          <h4 id ='num_likes_{{post.id}}' class='like'>0</h4>
+          <button id ="like"  value ="{{post.id}}"><i class="fa fa-heart" style = "color:#f7786b" onclick="count({{ post.id }})"></i></button>
+
+          {% if user.is_authenticated %}
+          {% if user == post.user %}
+            <p>
+            <button class="btn btn-primary collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample{{ post.id }}" aria-expanded="false" aria-controls="collapseExample{{ post.id }}">
+              Edit
+            </button>
+            </p>
+            <div class="collapse" id="collapseExample{{ post.id }}">
+                <div class="card card-body">
+                  <textarea rows="5" id="textarea{{ post.id }}" class="form-control" name="content">{{ post.content }}</textarea>
+                  <button type="button" class="btn btn-primary collapsed"  onclick="submit({{ post.id }})" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample{{ post.id }}" aria-expanded="false" aria-controls="collapseExample{{ post.id }}">Save changes</button>
+                </div>
+            </div>
+          {% endif %}
+          {% endif %}
+        </div>
+      </div>
+      <br>
+    {% endfor %}
+  </div>
+
+  <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+          {% if page_obj.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+          {% endif %}
+
+          {% if page_obj.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+          {% endif %}
+        </ul>
+  </nav>
+{% endblock %}
